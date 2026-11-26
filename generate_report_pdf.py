@@ -346,7 +346,7 @@ def build_html() -> str:
 <!-- ==================== BẢNG PHÂN CÔNG NHIỆM VỤ ==================== -->
 <div class="page-break"></div>
 <h1 class="front-title">BẢNG PHÂN CÔNG NHIỆM VỤ</h1>
-<p class="no-indent">Toàn bộ mã nguồn thực nghiệm, dữ liệu chuẩn và ứng dụng demo sản phẩm được tổ chức tại thư mục dự án (gồm <code>app.py</code>, <code>run_part3_experiments.py</code>, <code>src/</code>, <code>tests/verify_pipeline.py</code>).</p>
+<p class="no-indent">Toàn bộ mã nguồn thực nghiệm, sổ tay Jupyter Notebook (<code>bai1/kt1_eda.ipynb</code>, <code>kt2.ipynb</code>, <code>kt3.ipynb</code>), dữ liệu và ứng dụng demo SmartBasket được công khai tại: <code>https://github.com/Anbinh123/Phantichgiohang</code>.</p>
 <table class="data-table">
   <thead>
     <tr><th class="num" style="width:7%;">STT</th><th style="width:23%;">Họ và tên</th><th style="width:55%;">Nhiệm vụ phụ trách (Bài 1, Bài 2 &amp; Bài 3)</th><th class="num" style="width:15%;">Mức độ hoàn thành</th></tr>
@@ -436,7 +436,8 @@ def build_html() -> str:
 <div class="toc-row toc-l2"><span>3.6. Trực quan hóa mạng luật kết hợp và đề xuất ứng dụng thực tiễn</span><span>__P_3_6__</span></div>
 <div class="toc-row toc-l1"><span>KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN</span><span>__P_KET_LUAN__</span></div>
 <div class="toc-row toc-l1"><span>TÀI LIỆU THAM KHẢO</span><span>__P_TLTK__</span></div>
-<div class="toc-row toc-l1"><span>PHỤ LỤC A. HƯỚNG DẪN CÀI ĐẶT, TÁI LẬP VÀ CHẠY DEMO</span><span>__P_PHU_LUC__</span></div>
+<div class="toc-row toc-l1"><span>PHỤ LỤC A. HƯỚNG DẪN CÀI ĐẶT, TÁI LẬP VÀ CHẠY DEMO SMARTBASKET</span><span>__P_PHU_LUC__</span></div>
+<div class="toc-row toc-l1"><span>PHỤ LỤC B. NHẬT KÝ ĐÓNG GÓP CỦA CÁC THÀNH VIÊN (9 TUẦN)</span><span>__P_PHU_LUC_B__</span></div>
 
 <div class="page-break"></div>
 <h1 class="front-title">DANH MỤC KÝ HIỆU VÀ TỪ VIẾT TẮT</h1>
@@ -473,7 +474,7 @@ def build_html() -> str:
     <tr><td class="num">Hình 3.3</td><td>So sánh Lift và Confidence (5-Fold CV vs Hold-out Test 20%) qua từng bước cải tiến</td><td class="num">__F_3_3__</td></tr>
     <tr><td class="num">Hình 3.4</td><td>Phân bố Support, Confidence và Lift của 266 luật kết hợp cuối cùng</td><td class="num">__F_3_4__</td></tr>
     <tr><td class="num">Hình 3.5</td><td>Mạng lưới 15 luật kết hợp mạnh nhất theo Lift (FP-Growth sau tối ưu &amp; Pruning)</td><td class="num">__F_3_5__</td></tr>
-    <tr><td class="num">Hình A.1</td><td>Giao diện ứng dụng web demo sản phẩm chạy trên Streamlit</td><td class="num">__F_A_1__</td></tr>
+    <tr><td class="num">Hình A.1</td><td>Giao diện ứng dụng web demo sản phẩm SmartBasket (POS &amp; Gợi ý mua kèm Việt Nam)</td><td class="num">__F_A_1__</td></tr>
   </tbody>
 </table>
 
@@ -496,6 +497,8 @@ def build_html() -> str:
     <tr><td class="num">Bảng 3.6</td><td>Top 8 luật kết hợp tiêu biểu của mô hình cuối cùng (sau tối ưu và Pruning)</td><td class="num">__T_3_6__</td></tr>
     <tr><td class="num">Bảng 3.7</td><td>Đối chiếu chỉ tiêu kỹ thuật cam kết ban đầu với kết quả mô hình cuối cùng</td><td class="num">__T_3_7__</td></tr>
     <tr><td class="num">Bảng 3.8</td><td>Đề xuất phân khu sắp xếp quầy kệ siêu thị từ phân cụm mạng luật kết hợp</td><td class="num">__T_3_8__</td></tr>
+    <tr><td class="num">Bảng 3.9</td><td>Tổng hợp đối chiếu hoàn thành 4 nhiệm vụ đề tài qua 4 mốc kiểm tra</td><td class="num">__T_3_9__</td></tr>
+    <tr><td class="num">Bảng B.1</td><td>Nhật ký công việc và đóng góp của các thành viên trong 9 tuần</td><td class="num">__T_B_1__</td></tr>
   </tbody>
 </table>
 
@@ -818,6 +821,17 @@ def build_html() -> str:
   </tbody>
 </table>
 
+<div class="table-caption">Bảng 3.9: Tổng hợp đối chiếu hoàn thành 4 nhiệm vụ đề tài qua 4 mốc kiểm tra</div>
+<table class="data-table">
+  <thead><tr><th class="num" style="width:7%;">STT</th><th style="width:36%;">Nhiệm vụ đề tài được giao</th><th style="width:39%;">Kết quả hoàn thành &amp; Minh chứng</th><th class="num" style="width:18%;">Trạng thái</th></tr></thead>
+  <tbody>
+    <tr><td class="num">1</td><td>Nghiên cứu khai phá tập phổ biến, luật kết hợp &amp; 4 độ đo (Support, Confidence, Lift, Conviction)</td><td>Hoàn chỉnh Chương 1, <code>kt1_eda.ipynb</code> và công cụ tính 2 chiều trong demo web</td><td class="num">Đạt 100%</td></tr>
+    <tr><td class="num">2</td><td>Cài đặt Apriori (Python), FP-Growth (<code>mlxtend</code>) và ECLAT trên dữ liệu giao dịch</td><td><code>src/algorithms.py</code>, <code>kt2.ipynb</code>, chạy trên Groceries &amp; Siêu thị VN</td><td class="num">Đạt 100%</td></tr>
+    <tr><td class="num">3</td><td>So sánh thời gian, bộ nhớ theo ngưỡng support; lọc luật theo Lift &amp; tối ưu</td><td>Bảng 3.2–3.5, 5-Fold CV Grid Search, Ablation Study, 266 luật cuối</td><td class="num">Đạt 100%</td></tr>
+    <tr><td class="num">4</td><td>Trực quan hóa mạng luật; đề xuất sắp xếp sản phẩm &amp; gợi ý mua kèm</td><td>Hình 3.5, Bảng 3.8 (4 khu quầy kệ) &amp; Web Demo <code>SmartBasket</code></td><td class="num">Đạt 100%</td></tr>
+  </tbody>
+</table>
+
 <!-- ==================== KẾT LUẬN ==================== -->
 <div class="page-break"></div>
 <h1 class="chapter-title">KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN</h1>
@@ -826,7 +840,7 @@ def build_html() -> str:
   <li>Hoàn thiện đầy đủ quy trình 3 giai đoạn của dự án Học máy trên bộ dữ liệu bán lẻ thực tế Groceries (9.835 hóa đơn, 169 mặt hàng).</li>
   <li>Cài đặt và kiểm chứng tính nhất quán tuyệt đối (100% tập phổ biến và tập luật trùng khớp) giữa <strong>Apriori</strong> (Python tự cài đặt), <strong>ECLAT</strong> (TID-set dọc) và <strong>FP-Growth</strong> (<code>mlxtend</code>); chứng minh FP-Growth nhanh hơn Apriori từ <strong>29,1 lần</strong> (tại <code>0,008</code>) đến <strong>45,2 lần</strong> (tại <code>0,005</code>).</li>
   <li>Thực hiện kiểm định chéo 5-Fold CV, Grid Search không rò rỉ dữ liệu, Ablation Study và hậu xử lý cắt tỉa luật dư thừa, thu được <strong>266 luật kết hợp chất lượng cao</strong> đạt <code>CV Lift TB = 1,816 ± 0,067</code>, <code>Test Lift TB = 1,784</code> và <code>Test Confidence TB = 35,07%</code> (vượt xa Baseline <code>Lift = 1,00</code> và các chỉ tiêu đã cam kết).</li>
-  <li>Đóng gói hoàn chỉnh thành ứng dụng demo web 7 phân hệ bằng Streamlit (<code>app.py</code>) hỗ trợ gợi ý mua kèm theo thời gian thực, lọc dữ liệu Groceries/Online Retail và chạy trực tiếp các thử nghiệm kiểm định chéo.</li>
+  <li>Đóng gói hoàn chỉnh thành ứng dụng demo web <strong>SmartBasket</strong> (<code>web_app.py</code>) và phiên bản Streamlit (<code>app.py</code>), tích hợp cả bộ dữ liệu chuẩn <em>Groceries</em> và bộ dữ liệu thực tế <em>Siêu thị Việt Nam</em> (<code>sieu_thi_viet_nam.csv</code> — 3.000 hóa đơn, 44 mặt hàng, 447 luật gợi ý mua kèm) cùng hỗ trợ tải lên CSV định dạng Online Retail.</li>
 </ul>
 
 <h2>2. Những hạn chế còn tồn tại</h2>
@@ -855,34 +869,53 @@ def build_html() -> str:
 
 <!-- ==================== PHỤ LỤC A ==================== -->
 <div class="page-break"></div>
-<h1 class="chapter-title">PHỤ LỤC A. HƯỚNG DẪN CÀI ĐẶT, TÁI LẬP VÀ CHẠY DEMO</h1>
+<h1 class="chapter-title">PHỤ LỤC A. HƯỚNG DẪN CÀI ĐẶT, TÁI LẬP VÀ CHẠY DEMO SMARTBASKET</h1>
 
-<h2>A.1. Cấu trúc mã nguồn dự án</h2>
+<h2>A.1. Cấu trúc kho mã nguồn dự án</h2>
+<p class="no-indent">Kho mã nguồn công khai tại: <code>https://github.com/Anbinh123/Phantichgiohang</code></p>
 <ul>
-  <li><code>data/groceries.csv</code>: Bộ dữ liệu giao dịch chuẩn Groceries (9.835 hóa đơn, 169 mặt hàng).</li>
-  <li><code>src/data_pipeline.py</code>: Nạp dữ liệu (hỗ trợ cả Groceries và Online Retail CSV), làm sạch, lọc giỏ &lt; 2 món, chia Hold-out 80/20 (<code>random_state=42</code>) và mã hóa One-Hot.</li>
-  <li><code>src/algorithms.py</code>: Cài đặt Apriori (kèm trace <i>C<sub>k</sub> → L<sub>k</sub></i>), ECLAT, FP-Growth (<code>mlxtend</code>), đánh giá trên Test, phân cụm quầy kệ và gợi ý mua kèm.</li>
-  <li><code>src/part3_experiments.py</code> &amp; <code>run_part3_experiments.py</code>: Chạy kiểm định chéo 5-Fold CV, Grid Search, Ablation Study, cắt tỉa luật dư thừa và xuất bảng/biểu đồ.</li>
-  <li><code>app.py</code> &amp; <code>src/visualizations.py</code>: Ứng dụng web demo tương tác 7 phân hệ trên Streamlit.</li>
-  <li><code>tests/verify_pipeline.py</code>: Kiểm thử đối chiếu tính nhất quán giữa 3 thuật toán và pipeline dữ liệu.</li>
+  <li><code>data/groceries.csv</code> &amp; <code>data/sieu_thi_viet_nam.csv</code>: Dữ liệu Groceries (9.835 hóa đơn) và Siêu thị Việt Nam (3.000 hóa đơn, 44 mặt hàng Việt).</li>
+  <li><code>bai1/kt1_eda.ipynb</code>, <code>kt2.ipynb</code>, <code>kt3.ipynb</code>: Bộ 3 sổ tay Jupyter đã thực thi đầy đủ cho 3 bài kiểm tra.</li>
+  <li><code>src/data_pipeline.py</code>, <code>src/algorithms.py</code>, <code>src/part3_experiments.py</code>: Thư viện xử lý dữ liệu chống rò rỉ, cài đặt Apriori/ECLAT/FP-Growth, 5-Fold CV Grid Search và Ablation Study.</li>
+  <li><code>web_app.py</code> &amp; <code>web/</code>: Ứng dụng Web Sản phẩm hiện đại <strong>SmartBasket</strong> (POS giỏ hàng, phân khu quầy kệ, công thức 4 độ đo và benchmark).</li>
+  <li><code>app.py</code> &amp; <code>tests/verify_pipeline.py</code>: Giao diện Streamlit bổ trợ và bộ kiểm thử tính nhất quán thuật toán.</li>
 </ul>
 
 <h2>A.2. Yêu cầu môi trường và các bước thực hiện</h2>
 <p class="no-indent">Yêu cầu <strong>Python ≥ 3.10</strong>. Mở cửa sổ dòng lệnh tại thư mục dự án và chạy lần lượt các lệnh sau:</p>
-<pre class="code-block"># Bước 1: Cài đặt toàn bộ thư viện phụ thuộc
+<pre class="code-block"># Bước 1: Sao chép kho mã nguồn và cài đặt thư viện phụ thuộc
+git clone https://github.com/Anbinh123/Phantichgiohang.git
+cd Phantichgiohang
 pip install -r requirements.txt
 
 # Bước 2: Chạy kiểm thử và tái lập toàn bộ bảng biểu / hình vẽ thực nghiệm
 python tests/verify_pipeline.py
 python run_part3_experiments.py
 
-# Bước 3: Khởi chạy ứng dụng demo sản phẩm trên trình duyệt (http://localhost:8501)
-streamlit run app.py</pre>
+# Bước 3: Khởi chạy ứng dụng web SmartBasket trên trình duyệt (http://localhost:8501)
+python web_app.py
+# Hoặc chạy giao diện Streamlit: streamlit run app.py</pre>
 
 <div class="figure-block">
-  <img src="{img_uri('fig_appendix_demo.png')}" alt="Giao diện demo Streamlit" />
-  <div class="figure-caption">Hình A.1: Giao diện ứng dụng web demo sản phẩm chạy trên trình duyệt (Streamlit).</div>
+  <img src="{img_uri('fig_appendix_demo.png')}" alt="Giao diện web SmartBasket" />
+  <div class="figure-caption">Hình A.1: Giao diện ứng dụng web demo sản phẩm SmartBasket (POS &amp; Gợi ý mua kèm Việt Nam).</div>
 </div>
+
+<!-- ==================== PHỤ LỤC B ==================== -->
+<div class="page-break"></div>
+<h1 class="chapter-title">PHỤ LỤC B. NHẬT KÝ ĐÓNG GÓP CỦA CÁC THÀNH VIÊN (9 TUẦN)</h1>
+<div class="table-caption">Bảng B.1: Nhật ký công việc và đóng góp của các thành viên trong 9 tuần</div>
+<table class="data-table">
+  <thead><tr><th class="num" style="width:10%;">Tuần</th><th style="width:24%;">Thành viên thực hiện</th><th style="width:66%;">Nội dung công việc &amp; Minh chứng hoàn thành</th></tr></thead>
+  <tbody>
+    <tr><td class="num">Tuần 1–2</td><td>Trần Văn Thực &amp; Nguyễn Đức An Bình</td><td>Khảo sát bài toán ARM/FIM, thiết lập tiêu chí thành công (Lift ≥ 1,30, Conf ≥ 25%) và tải bộ dữ liệu chuẩn Groceries.</td></tr>
+    <tr><td class="num">Tuần 3–4</td><td>Trần Văn Thực &amp; Nguyễn Đức An Bình</td><td>Hoàn thành <strong>Bài kiểm tra 1</strong>: Notebook <code>bai1/kt1_eda.ipynb</code>, phân tích phân bố, lọc 2.159 giỏ 1 món, chia Hold-out 80/20 chống rò rỉ.</td></tr>
+    <tr><td class="num">Tuần 5</td><td>Trần Văn Thực</td><td>Tự cài đặt thuật toán Apriori (<code>src/algorithms.py</code>), thêm cơ chế theo dõi cắt tỉa <i>C<sub>k</sub> → L<sub>k</sub></i> và đối chiếu Baseline Most Popular.</td></tr>
+    <tr><td class="num">Tuần 6</td><td>Nguyễn Đức An Bình &amp; Trần Văn Thực</td><td>Hoàn thành <strong>Bài kiểm tra 2</strong>: Cài đặt ECLAT, chạy FP-Growth (<code>mlxtend</code>), benchmark tốc độ/bộ nhớ và hoàn thiện <code>kt2.ipynb</code>.</td></tr>
+    <tr><td class="num">Tuần 7–8</td><td>Nguyễn Đức An Bình &amp; Trần Văn Thực</td><td>Hoàn thành <strong>Bài kiểm tra 3</strong>: Cài đặt 5-Fold CV Grid Search (Train only), cắt tỉa luật dư thừa, Ablation Study, <code>kt3.ipynb</code> và <code>run_part3_experiments.py</code>.</td></tr>
+    <tr><td class="num">Tuần 9</td><td>Trần Văn Thực &amp; Nguyễn Đức An Bình</td><td>Xây dựng dữ liệu Siêu thị Việt Nam, hoàn thiện ứng dụng web <strong>SmartBasket</strong> (<code>web_app.py</code>), xuất báo cáo PDF/Word và đẩy toàn bộ lên GitHub.</td></tr>
+  </tbody>
+</table>
 
 </body>
 </html>
@@ -905,16 +938,19 @@ streamlit run app.py</pre>
     return html
 
 
-def _render_pdf(html_text: str, browser_exe: Path) -> None:
-    HTML_PATH.parent.mkdir(parents=True, exist_ok=True)
-    HTML_PATH.write_text(html_text, encoding="utf-8")
+def _render_pdf(html_text: str, browser_exe: Path, html_name: str = "nhom23_report.html") -> None:
+    html_file = ROOT / "outputs" / html_name
+    html_file.parent.mkdir(parents=True, exist_ok=True)
+    html_file.write_text(html_text, encoding="utf-8")
+    if PDF_PATH.exists():
+        PDF_PATH.unlink()
     cmd = [
         str(browser_exe),
         "--headless",
         "--disable-gpu",
         "--no-pdf-header-footer",
         f"--print-to-pdf={PDF_PATH}",
-        HTML_PATH.resolve().as_uri(),
+        html_file.resolve().as_uri(),
     ]
     res = subprocess.run(cmd, capture_output=True, text=True, check=False)
     if res.returncode != 0 or not PDF_PATH.exists():
@@ -953,6 +989,7 @@ def _resolve_page_numbers(pdf_path: Path) -> dict[str, str]:
         "__P_KET_LUAN__": "KẾT LUẬN VÀ HƯỚNG PHÁT TRIỂN",
         "__P_TLTK__": "TÀI LIỆU THAM KHẢO",
         "__P_PHU_LUC__": "PHỤ LỤC A.",
+        "__P_PHU_LUC_B__": "PHỤ LỤC B.",
         "__F_1_1__": "Hình 1.1:",
         "__F_2_1__": "Hình 2.1:",
         "__F_2_2__": "Hình 2.2:",
@@ -977,6 +1014,8 @@ def _resolve_page_numbers(pdf_path: Path) -> dict[str, str]:
         "__T_3_6__": "Bảng 3.6:",
         "__T_3_7__": "Bảng 3.7:",
         "__T_3_8__": "Bảng 3.8:",
+        "__T_3_9__": "Bảng 3.9:",
+        "__T_B_1__": "Bảng B.1:",
     }
 
     doc = pymupdf.open(pdf_path)
@@ -1019,14 +1058,15 @@ def main() -> None:
 
     # Pass 1: initial PDF to measure exact page numbers
     base_html = build_html()
-    _render_pdf(base_html, browser_exe)
+    _render_pdf(base_html, browser_exe, html_name="nhom23_pass1.html")
     page_map = _resolve_page_numbers(PDF_PATH)
 
     # Pass 2: inject exact page numbers into TOC and lists
     final_html = base_html
     for k, v in page_map.items():
         final_html = final_html.replace(k, v)
-    _render_pdf(final_html, browser_exe)
+    _render_pdf(final_html, browser_exe, html_name="nhom23_report.html")
+    (ROOT / "outputs" / "nhom23_pass1.html").unlink(missing_ok=True)
     print(f"Generated PDF with exact page numbers: {PDF_PATH} ({PDF_PATH.stat().st_size:,} bytes)")
 
 

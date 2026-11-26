@@ -515,7 +515,7 @@ async def api_grid_search(request: Request) -> JSONResponse:
             "min_support": float(r["min_support"]),
             "min_confidence": float(r["min_confidence"]),
             "min_lift": float(r["min_lift"]),
-            "max_len": str(r["max_len"]),
+            "max_len": "None" if str(r["max_len"]) == "None" else str(int(float(r["max_len"]))),
             "n_rules_mean": round(float(r["n_rules_mean"]), 1),
             "val_lift_mean": round(float(r["val_lift_mean"]), 3),
             "val_lift_std": round(float(r["val_lift_std"]), 3),
@@ -523,7 +523,7 @@ async def api_grid_search(request: Request) -> JSONResponse:
             "val_conf_std": round(float(r["val_conf_std"]) * 100.0, 2),
             "retention_pct": round(float(r["rule_retention_pct"]), 1),
         }
-        for _, r in gdf.head(20).iterrows()
+        for _, r in gdf.iterrows()
     ]
     return JSONResponse({"results": rows})
 

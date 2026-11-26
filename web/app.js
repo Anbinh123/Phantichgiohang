@@ -568,7 +568,7 @@ function renderLineChartSVG(containerId, seriesData, yKey, yLabel) {
     pts.forEach((p) => {
       svg += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="${col}"><title>${algo} (sup=${p.s}): ${p.v}</title></circle>`;
     });
-    svg += `<circle cx="${180 + aIdx * 115}" cy="12" r="4" fill="${col}"/><text x="${188 + aIdx * 115}" y="16" font-size="10.5" fill="#334155">${algo.split(" ")[0]}</text>`;
+    svg += `<circle cx="${265 + aIdx * 92}" cy="12" r="4" fill="${col}"/><text x="${273 + aIdx * 92}" y="16" font-size="10.5" fill="#334155">${algo.split(" ")[0]}</text>`;
   });
 
   el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${svg}</svg>`;
@@ -617,8 +617,40 @@ async function runGridSearch() {
   try {
     const data = await postJSON("/api/part3/grid-search", {});
     document.querySelector("#grid-table tbody").innerHTML = data.results
+      .slice(0, 15)
       .map((r) => `<tr><td>${r.min_support}</td><td>${r.min_confidence}</td><td>${r.min_lift}</td><td>${r.max_len}</td><td>${r.n_rules_mean}</td><td><strong>${r.val_lift_mean}</strong> ± ${r.val_lift_std}</td><td>${r.val_conf_pct}%</td></tr>`)
       .join("");
+
+    // Render SVG validation curve at min_confidence=0.25, max_len=3
+    let sub = data.results.filter((r) => Math.abs(r.min_confidence - 0.25) < 1e-6 && Number(r.max_len) === 3);
+    if (!sub.length) sub = data.results;
+    if (sub.length) {
+      const sups = [...new Set(sub.map((d) => d.min_support))].sort((a, b) => a - b);
+      const lifts = [...new Set(sub.map((d) => d.min_lift))].sort((a, b) => a - b);
+      const cols = ["#2563EB", "#D97706", "#059669"];
+      const maxY = Math.max(...sub.map((d) => d.val_lift_mean), 1.5);
+      const minY = Math.max(1.0, Math.min(...sub.map((d) => d.val_lift_mean)) - 0.15);
+      const W = 540, H = 220, pL = 46, pR = 20, pT = 26, pB = 32;
+      const pW = W - pL - pR, pH = H - pT - pB;
+      const xOf = (i) => pL + (i / Math.max(1, sups.length - 1)) * pW;
+      const yOf = (v) => pT + pH - ((v - minY) / Math.max(0.1, maxY - minY)) * pH;
+      let s = `<line x1="${pL}" y1="${pT+pH}" x2="${W-pR}" y2="${pT+pH}" stroke="#94A3B8"/><line x1="${pL}" y1="${pT}" x2="${pL}" y2="${pT+pH}" stroke="#94A3B8"/>`;
+      s += `<text x="${pL}" y="15" font-size="11.5" font-weight="700" fill="#0F172A">Đường cong 5-Fold CV (Conf=0.25, len≤3)</text>`;
+      sups.forEach((v, i) => { s += `<text x="${xOf(i)}" y="${H-10}" text-anchor="middle" font-size="10.5" fill="#475569">${v}</text>`; });
+      lifts.forEach((lv, li) => {
+        const c = cols[li % cols.length];
+        const pts = sups.map((sv, i) => {
+          const rec = sub.find((d) => d.min_support === sv && d.min_lift === lv);
+          return rec ? { x: xOf(i), y: yOf(rec.val_lift_mean), v: rec.val_lift_mean, std: rec.val_lift_std } : null;
+        }).filter(Boolean);
+        if (pts.length) {
+          s += `<path d="${pts.map((p, i) => `${i===0?"M":"L"} ${p.x} ${p.y}`).join(" ")}" fill="none" stroke="${c}" stroke-width="2.2"/>`;
+          pts.forEach((p) => { s += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="${c}"><title>Lift≥${lv}: ${p.v} ± ${p.std}</title></circle>`; });
+          s += `<circle cx="${320 + li*70}" cy="11" r="4" fill="${c}"/><text x="${327 + li*70}" y="15" font-size="10" fill="#334155">≥${lv}</text>`;
+        }
+      });
+      document.getElementById("chart-grid-cv").innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${s}</svg>`;
+    }
     showToast("Đã hoàn tất 5-Fold CV Grid Search trên tập Train!");
   } finally {
     btn.disabled = false;
@@ -635,6 +667,28 @@ async function runAblation() {
     document.querySelector("#ablation-table tbody").innerHTML = data.ablation
       .map((r) => `<tr><td>${r.step}</td><td>${r.n_rules_train}</td><td><strong>${r.cv_lift_mean}</strong> ± ${r.cv_lift_std}</td><td>${r.cv_conf_mean}%</td><td>${r.test_lift}</td><td>${r.test_conf}%</td></tr>`)
       .join("");
+
+    // Render SVG grouped bar chart comparing 5-Fold CV vs Test 20% Lift
+    const rows = data.ablation;
+    if (rows.length) {
+      const maxY = Math.max(...rows.flatMap((r) => [r.cv_lift_mean, r.test_lift]), 2.0);
+      const W = 540, H = 220, pL = 42, pR = 14, pT = 26, pB = 34;
+      const pW = W - pL - pR, pH = H - pT - pB;
+      const grpW = pW / rows.length, bw = Math.min(24, grpW * 0.34);
+      let s = `<line x1="${pL}" y1="${pT+pH}" x2="${W-pR}" y2="${pT+pH}" stroke="#94A3B8"/>`;
+      const thrY = pT + pH - (1.3 / maxY) * pH;
+      s += `<line x1="${pL}" y1="${thrY}" x2="${W-pR}" y2="${thrY}" stroke="#DC2626" stroke-dasharray="4,3"/>`;
+      s += `<text x="${pL}" y="15" font-size="11.5" font-weight="700" fill="#0F172A">Ablation Lift TB (Xanh dương: 5-Fold CV • Xanh lá: Test 20%)</text>`;
+      rows.forEach((r, i) => {
+        const cx = pL + (i + 0.5) * grpW;
+        const h1 = (r.cv_lift_mean / maxY) * pH;
+        const h2 = (r.test_lift / maxY) * pH;
+        s += `<rect x="${cx - bw - 2}" y="${pT+pH-h1}" width="${bw}" height="${h1}" rx="3" fill="#2563EB"><title>${r.step} CV: ${r.cv_lift_mean}</title></rect>`;
+        s += `<rect x="${cx + 2}" y="${pT+pH-h2}" width="${bw}" height="${h2}" rx="3" fill="#059669"><title>${r.step} Test: ${r.test_lift}</title></rect>`;
+        s += `<text x="${cx}" y="${H-12}" text-anchor="middle" font-size="10.5" fill="#475569">Bước ${i}</text>`;
+      });
+      document.getElementById("chart-ablation").innerHTML = `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">${s}</svg>`;
+    }
     showToast("Đã hoàn tất Ablation Study (CV vs Test)!");
   } finally {
     btn.disabled = false;
