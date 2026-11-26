@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.streamlit/
+outputs/nhom23_report.html
+.DS_Store
+Thumbs.db

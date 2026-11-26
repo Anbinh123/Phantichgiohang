@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartBasket — Phân tích Giỏ hàng & Gợi ý Mua kèm | Nhóm 23 ICTU</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <!-- TOP NAVIGATION BAR -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">🛒</div>
+        <div>
+          <div class="brand-title">SmartBasket <span class="brand-tag">Nhóm 23 • ICTU</span></div>
+          <div class="brand-sub">Phân tích giỏ hàng &amp; Gợi ý sản phẩm mua kèm thông minh</div>
+        </div>
+      </div>
+
+      <div class="topbar-controls">
+        <div class="seg-group" id="dataset-switcher" role="group" aria-label="Chọn dữ liệu">
+          <button class="seg-btn active" data-source="vn">🇻🇳 Siêu thị VN (3.000)</button>
+          <button class="seg-btn" data-source="groceries">🌍 Groceries (9.835)</button>
+          <label class="seg-btn upload-btn" title="Tải lên CSV giỏ hàng hoặc Online Retail">
+            📤 Tải CSV
+            <input type="file" id="csv-upload-input" accept=".csv,.txt" hidden />
+          </label>
+        </div>
+
+        <label class="switch-pill" title="Loại bỏ hóa đơn chỉ có 1 sản phẩm gây nhiễu">
+          <input type="checkbox" id="filter-single-toggle" checked />
+          <span>Lọc giỏ 1 món</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- NAVIGATION TABS -->
+    <nav class="nav-tabs">
+      <div class="nav-tabs-inner">
+        <button class="tab-btn active" data-tab="pos">🛍️ Siêu thị &amp; Gợi ý POS</button>
+        <button class="tab-btn" data-tab="analytics">📊 Phân tích &amp; Quầy kệ</button>
+        <button class="tab-btn" data-tab="rules">⚙️ Luật kết hợp &amp; Công thức</button>
+        <button class="tab-btn" data-tab="benchmark">⚡ Hiệu năng &amp; Tối ưu (Phần 3)</button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- KPI STRIP -->
+    <section class="kpi-grid" id="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-label">Tổng hóa đơn gốc</div>
+        <div class="kpi-value" id="kpi-raw">—</div>
+        <div class="kpi-sub" id="kpi-items">— mặt hàng</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Tập Train / Test (80/20)</div>
+        <div class="kpi-value" id="kpi-split">—</div>
+        <div class="kpi-sub">random_state = 42</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Luật kết hợp chất lượng</div>
+        <div class="kpi-value" id="kpi-rules">—</div>
+        <div class="kpi-sub" id="kpi-freq">— tập phổ biến</div>
+      </div>
+      <div class="kpi-card accent-emerald">
+        <div class="kpi-label">Lift trung bình</div>
+        <div class="kpi-value" id="kpi-lift">—</div>
+        <div class="kpi-sub" id="kpi-lift-delta">So với bán chạy (1,00)</div>
+      </div>
+      <div class="kpi-card accent-blue">
+        <div class="kpi-label">Độ tin cậy &amp; Tốc độ</div>
+        <div class="kpi-value" id="kpi-conf">—</div>
+        <div class="kpi-sub" id="kpi-time">— giây</div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 1: STOREFRONT & POS CART ==================== -->
+    <section class="tab-panel active" id="tab-pos">
+      <div class="pos-layout">
+        <!-- LEFT: STOREFRONT -->
+        <div class="card storefront-card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Gian hàng Siêu thị Tương tác</h2>
+              <p class="card-desc">Chọn nhanh kịch bản hoặc nhấn vào từng sản phẩm để bỏ vào giỏ hàng</p>
+            </div>
+            <div class="search-wrap">
+              <input type="text" id="catalog-search" class="input" placeholder="🔍 Tìm tên sản phẩm..." />
+            </div>
+          </div>
+
+          <!-- PRESETS -->
+          <div class="preset-bar">
+            <span class="preset-label">Giỏ mẫu nhanh:</span>
+            <div class="chip-list" id="preset-chips"></div>
+          </div>
+
+          <!-- CATEGORY FILTER -->
+          <div class="chip-list category-bar" id="category-chips"></div>
+
+          <!-- PRODUCT GRID -->
+          <div class="product-grid" id="product-grid"></div>
+        </div>
+
+        <!-- RIGHT: CART & LIVE UPSELL ASSISTANT -->
+        <aside class="pos-sidebar">
+          <div class="card cart-card">
+            <div class="card-header compact">
+              <div>
+                <h2 class="card-title">🧾 Giỏ hàng hiện tại (<span id="cart-count">0</span>)</h2>
+              </div>
+              <button class="btn-ghost btn-sm" id="clear-cart-btn">Xóa giỏ</button>
+            </div>
+
+            <div class="cart-items" id="cart-items">
+              <div class="empty-state">Chưa có sản phẩm nào trong giỏ.</div>
+            </div>
+
+            <div class="cart-summary">
+              <div class="summary-row">
+                <span>Tạm tính giỏ hiện tại</span>
+                <strong id="cart-subtotal">0 đ</strong>
+              </div>
+              <div class="summary-row subtle">
+                <span>Mặt hàng trong giỏ</span>
+                <span id="cart-item-names">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI RECOMMENDATIONS -->
+          <div class="card rec-panel">
+            <div class="card-header compact">
+              <div>
+                <h2 class="card-title">✨ Thường được mua kèm</h2>
+                <p class="card-desc">Đề xuất theo luật kết hợp từ dữ liệu hóa đơn thực tế</p>
+              </div>
+            </div>
+
+            <div id="rec-list" class="rec-list"></div>
+
+            <div id="combo-banner" class="combo-banner hidden"></div>
+
+            <details class="baseline-details">
+              <summary>📌 Đối chiếu: Gợi ý kiểu cũ (Bán chạy đại trà • Lift = 1,00)</summary>
+              <div id="baseline-list" class="baseline-list"></div>
+            </details>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: ANALYTICS & SHELF LAYOUT ==================== -->
+    <section class="tab-panel" id="tab-analytics">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">🗺️ Đề xuất Phân khu &amp; Sắp xếp Quầy kệ Siêu thị</h2>
+            <p class="card-desc">Tự động gom nhóm các mặt hàng hay đi cùng nhau (Modularity Clustering trên mạng luật) để bố trí gần nhau</p>
+          </div>
+        </div>
+        <div class="zones-grid" id="zones-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">🕸️ Mạng lưới Liên kết Sản phẩm</h2>
+            <p class="card-desc">Mũi tên chỉ chiều mua kèm (X → Y); di chuột vào nút hoặc cạnh để xem chi tiết</p>
+          </div>
+          <div class="inline-control">
+            <label for="network-focus-select">Lọc theo sản phẩm:</label>
+            <select id="network-focus-select" class="select"></select>
+          </div>
+        </div>
+        <div class="network-wrap">
+          <svg id="network-svg" viewBox="0 0 900 460"></svg>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header compact">
+            <h2 class="card-title">🔥 Top 12 sản phẩm bán chạy nhất</h2>
+          </div>
+          <div id="chart-top-items" class="chart-box"></div>
+        </div>
+        <div class="card">
+          <div class="card-header compact">
+            <h2 class="card-title">📦 Phân bố số món mỗi hóa đơn</h2>
+          </div>
+          <div id="chart-basket-sizes" class="chart-box"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header compact">
+          <div>
+            <h2 class="card-title">🧩 Ma trận tỷ lệ mua cùng nhau (Top 8 sản phẩm chính)</h2>
+            <p class="card-desc">Tỷ lệ % hóa đơn có sự xuất hiện đồng thời của từng cặp sản phẩm</p>
+          </div>
+        </div>
+        <div id="heatmap-container" class="heatmap-wrap"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: RULES EXPLORER & THEORY ==================== -->
+    <section class="tab-panel" id="tab-rules">
+      <!-- TUNING BAR -->
+      <div class="card tuning-card">
+        <div class="tuning-grid">
+          <div class="field">
+            <label>Thuật toán khai phá</label>
+            <select id="param-algo" class="select">
+              <option value="FP-Growth (mlxtend)">FP-Growth (mlxtend)</option>
+              <option value="Apriori (Python)">Apriori (Python tự cài)</option>
+              <option value="ECLAT (Python)">ECLAT (Python tự cài)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>min_support: <strong id="val-sup">0.008</strong></label>
+            <input type="range" id="param-sup" min="0.004" max="0.040" step="0.001" value="0.008" />
+          </div>
+          <div class="field">
+            <label>min_confidence: <strong id="val-conf">0.25</strong></label>
+            <input type="range" id="param-conf" min="0.10" max="0.70" step="0.05" value="0.25" />
+          </div>
+          <div class="field">
+            <label>min_lift: <strong id="val-lift">1.50</strong></label>
+            <input type="range" id="param-lift" min="1.00" max="3.00" step="0.05" value="1.50" />
+          </div>
+          <div class="field">
+            <label>Độ dài luật tối đa</label>
+            <select id="param-maxlen" class="select">
+              <option value="2">2 món</option>
+              <option value="3" selected>3 món</option>
+              <option value="4">4 món</option>
+              <option value="None">Không giới hạn</option>
+            </select>
+          </div>
+          <div class="field checkbox-field">
+            <label class="switch-pill">
+              <input type="checkbox" id="param-pruning" />
+              <span>Cắt tỉa dư thừa</span>
+            </label>
+            <button class="btn-primary" id="apply-mining-btn">Áp dụng</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIFT IMPACT & GENERALIZATION -->
+      <div class="two-col">
+        <div class="card">
+          <h3 class="card-subtitle">📌 Tác động lọc luật theo ngưỡng Lift</h3>
+          <table class="clean-table" id="lift-impact-table">
+            <thead>
+              <tr><th>Mức lọc Lift</th><th>Số luật</th><th>Conf TB</th><th>Lift TB</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3 class="card-subtitle">🧪 Kiểm chứng Tổng quát hóa trên Tập Test 20%</h3>
+          <div class="gen-grid" id="test-gen-box"></div>
+        </div>
+      </div>
+
+      <!-- RULES TABLE + INSPECTOR -->
+      <div class="rules-layout">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Danh sách Luật kết hợp</h2>
+              <p class="card-desc">Nhấp vào một dòng bất kỳ để xem cách tính chi tiết 4 độ đo bên phải</p>
+            </div>
+            <div class="row-actions">
+              <input type="text" id="rules-search" class="input" placeholder="🔍 Lọc luật..." />
+              <a href="/api/export/rules.csv" class="btn-outline">⬇️ Xuất CSV</a>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table class="clean-table clickable" id="rules-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Sản phẩm đã mua (X)</th>
+                  <th>Gợi ý mua kèm (Y)</th>
+                  <th>Support</th>
+                  <th>Conf</th>
+                  <th>Lift</th>
+                  <th>Conviction</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card inspector-card">
+          <h2 class="card-title">📖 Giải thích Công thức &amp; Chiều gợi ý</h2>
+          <div id="rule-inspector-body" class="inspector-body">
+            <p class="muted">Chọn một luật từ bảng bên trái để xem cách tính chi tiết.</p>
+          </div>
+          <div class="formula-cheatsheet">
+            <div><strong>Support(X⇒Y)</strong> = P(X ∪ Y)</div>
+            <div><strong>Confidence(X⇒Y)</strong> = P(X ∪ Y) / P(X)</div>
+            <div><strong>Lift(X⇒Y)</strong> = Confidence / P(Y) <span class="muted">(&gt;1 là liên kết thật)</span></div>
+            <div><strong>Conviction(X⇒Y)</strong> = (1 − P(Y)) / (1 − Confidence)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: BENCHMARK & PART 3 ==================== -->
+    <section class="tab-panel" id="tab-benchmark">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">⚡ Đối sánh Thuật toán: Apriori vs ECLAT vs FP-Growth</h2>
+            <p class="card-desc">Đo thời gian thực thi và bộ nhớ đỉnh khi giảm dần ngưỡng hỗ trợ (min_support)</p>
+          </div>
+          <div class="row-actions">
+            <label class="switch-pill">
+              <input type="checkbox" id="bench-005" />
+              <span>Gồm ngưỡng 0.005</span>
+            </label>
+            <button class="btn-primary" id="run-bench-btn">🚀 Chạy Benchmark</button>
+          </div>
+        </div>
+        <div id="bench-summary" class="info-banner hidden"></div>
+        <div class="two-col">
+          <div id="chart-bench-time" class="chart-box"></div>
+          <div id="chart-bench-mem" class="chart-box"></div>
+        </div>
+        <div class="two-col" style="margin-top: 12px;">
+          <div>
+            <h3 class="card-subtitle">Bảng kết quả đo thời gian &amp; bộ nhớ</h3>
+            <div class="table-scroll-sm">
+              <table class="clean-table" id="bench-table">
+                <thead><tr><th>min_support</th><th>Thuật toán</th><th>Thời gian (s)</th><th>Bộ nhớ (MB)</th><th>Số tập</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <h3 class="card-subtitle">Quá trình cắt tỉa ứng viên Apriori (C_k → L_k)</h3>
+            <table class="clean-table" id="trace-table">
+              <thead><tr><th>Độ dài (k)</th><th>Ứng viên |C_k|</th><th>Đạt chuẩn |L_k|</th><th>Loại bỏ (%)</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">🧪 Kiểm định chéo 5-Fold CV Grid Search</h2>
+              <p class="card-desc">Chỉ thực hiện trên tập Train (tuyệt đối không chạm tập Test)</p>
+            </div>
+            <button class="btn-primary" id="run-grid-btn">Chạy Grid Search</button>
+          </div>
+          <div class="table-scroll-sm">
+            <table class="clean-table" id="grid-table">
+              <thead><tr><th>sup</th><th>conf</th><th>lift</th><th>len</th><th>Luật TB</th><th>CV Lift ± Std</th><th>CV Conf (%)</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">📊 Ablation Study (5-Fold CV vs Test 20%)</h2>
+              <p class="card-desc">Đo đóng góp từng bước cải tiến trên cùng cách chia</p>
+            </div>
+            <button class="btn-primary" id="run-ablation-btn">Chạy Ablation</button>
+          </div>
+          <div class="table-scroll-sm">
+            <table class="clean-table" id="ablation-table">
+              <thead><tr><th>Cấu hình</th><th>Luật</th><th>CV Lift ± Std</th><th>CV Conf</th><th>Test Lift</th><th>Test Conf</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
